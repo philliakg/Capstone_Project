@@ -1,4 +1,4 @@
-export const API_URL = 'https://kgabocapstonebackend.netlify.app/'
+export const API_URL = 'https://kgabocapstonebackend.onrender.com'
 
 export const imgUrl = (path) => {
   if (!path) return API_URL + '/images/RoomImage1.png'
