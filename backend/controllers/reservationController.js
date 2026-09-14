@@ -67,8 +67,6 @@ const getHostReservations = async (req, res) => {
     res.status(400).json({ error: error.message })
   }
 }
-
-// DELETE /api/reservations/:id
 const deleteReservation = async (req, res) => {
   const { id } = req.params
   if (!mongoose.Types.ObjectId.isValid(id)) {

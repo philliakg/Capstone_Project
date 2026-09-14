@@ -24,8 +24,6 @@ const userSchema = new Schema({
     default: 'user'
   }
 })
-
-// static login method (Net Ninja pattern)
 userSchema.statics.login = async function (email, password) {
   if (!email || !password) {
     throw Error('All fields must be filled')
@@ -45,8 +43,6 @@ userSchema.statics.login = async function (email, password) {
 
   return user
 }
-
-// static signup used by the seed script
 userSchema.statics.signup = async function (email, password, username, role) {
   if (!email || !password || !username) {
     throw Error('All fields must be filled')

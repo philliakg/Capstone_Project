@@ -5,25 +5,21 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 const path = require('path')
 const bcrypt = require('bcrypt')
-
 const accommodationRoutes = require('./routes/accommodationRoutes')
 const reservationRoutes = require('./routes/reservationRoutes')
 const userRoutes = require('./routes/userRoutes')
 const User = require('./models/User')
 const Accommodation = require('./models/Accommodation')
-
 const app = express()
 
 app.use(cors())
 app.use(express.json())
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 app.use('/images', express.static(path.join(__dirname, 'uploads')))
-
 app.use((req, res, next) => {
   console.log(req.path, req.method)
   next()
 })
-
 app.use('/api/accommodations', accommodationRoutes)
 app.use('/api/reservations', reservationRoutes)
 app.use('/api/users', userRoutes)
@@ -64,7 +60,7 @@ const seedIfEmpty = async () => {
   )
 
   kgabo = await User.findOne({ email: 'kgabo@gmail.com' })
-  console.log('synced starter users')
+  console.log('start loading users')
 
   if (listingCount === 0 && kgabo) {
     const listings = [
@@ -283,7 +279,6 @@ const seedIfEmpty = async () => {
     await Accommodation.updateMany({ title: { $in: fix.from } }, { $set: fix.set })
   }
 
-  // Ensure seeded listings are owned by the current configured host account.
   if (kgabo) {
     const seededTitles = [
       'Modern Villa with Garden Deck',
