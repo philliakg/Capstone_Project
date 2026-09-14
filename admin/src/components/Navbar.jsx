@@ -3,16 +3,6 @@ import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useAuthContext } from '../hooks/useAuthContext'
 import { useLogout } from '../hooks/useLogout'
 
-const Logo = () => (
-  <svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true">
-    <path
-      fill="#FF385C"
-      d="M16 1c2.1 3.6 6.4 10.7 8.7 15.2 1.6 3.1 2.3 5.5 2.3 7.4 0 4.5-3.4 8.4-8.1 8.4-2.5 0-4.6-1.1-6-2.8C11.5 30.9 9.4 32 6.9 32 2.2 32-1.2 28.1-1.2 23.6c0-1.9.7-4.3 2.3-7.4C3.4 11.7 7.7 4.6 9.8 1 11.7-2.1 14.1-2.1 16 1z"
-      transform="translate(2 0)"
-    />
-  </svg>
-)
-
 const Navbar = () => {
   const { user } = useAuthContext()
   const { logout } = useLogout()
@@ -29,8 +19,7 @@ const Navbar = () => {
     <header className="navbar">
       <div className="navbar-inner">
         <Link to={user ? '/dashboard' : '/login'} className="logo">
-          <Logo />
-          <span>airbnb</span>
+          <img src="/images/AirbnbNav.png" alt="Airbnb" className="logo-img" />
         </Link>
 
         <div className="nav-right">

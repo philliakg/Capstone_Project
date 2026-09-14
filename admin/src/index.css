@@ -43,11 +43,19 @@ main { flex: 1; }
 .logo {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 0;
   color: var(--coral);
   font-weight: 700;
   font-size: 22px;
   letter-spacing: -0.6px;
+  width: 210px;
+  overflow: hidden;
+}
+.logo-img {
+  height: 72px;
+  width: auto;
+  max-width: none;
+  object-fit: contain;
 }
 .nav-right {
   display: flex;

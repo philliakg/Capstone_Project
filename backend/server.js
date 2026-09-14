@@ -14,30 +14,6 @@ const Accommodation = require('./models/Accommodation')
 
 const app = express()
 
-const IMAGE_REMAP = {
-  '/images/figma-image-33.jpg': '/images/Big_Card.png',
-  '/images/figma-image-11.png': '/images/RoomImage1.png',
-  '/images/figma-image-14.png': '/images/RoomImage.png',
-  '/images/figma-image-17.png': '/images/RoomImage2.png',
-  '/images/figma-image-01.png': '/images/RoomImage3.png',
-  '/images/figma-image-26.png': '/images/BlueDownArrow.png',
-  '/images/figma-image-05.jpg': '/images/Apartment.jpg',
-  '/images/figma-image-04.jpg': '/images/Apartment1.jpg',
-  '/images/figma-image-06.jpg': '/images/Apartment2.jpg',
-  '/images/figma-image-07.png': '/images/Image11.png',
-  '/images/figma-image-12.jpg': '/images/Apartment3.jpg',
-  '/images/figma-image-13.jpg': '/images/Apartment.jpg',
-  '/images/figma-image-25.png': '/images/AvatarBase.png',
-  '/images/figma-image-20.png': '/images/Avatar.png',
-  '/images/figma-image-18.png': '/images/Avatar2.png',
-  '/images/figma-image-21.png': '/images/Avatar3.png',
-  '/images/figma-image-22.png': '/images/Avatar4.png',
-  '/images/figma-image-23.png': '/images/Avatar5.png',
-  '/images/figma-image-24.png': '/images/Avatar6.png',
-  '/images/figma-image-10.png': '/images/Avatar7.png',
-  '/images/figma-image-02.png': '/images/RoomImage1.png'
-}
-
 app.use(cors())
 app.use(express.json())
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
@@ -55,7 +31,7 @@ app.use('/api/users', userRoutes)
 const seedIfEmpty = async () => {
   const listingCount = await Accommodation.countDocuments()
 
-  let jane
+  let kgabo
 
   const salt = await bcrypt.genSalt(10)
   const philliaHash = await bcrypt.hash('password123', salt)
@@ -87,10 +63,10 @@ const seedIfEmpty = async () => {
     { upsert: true }
   )
 
-  jane = await User.findOne({ email: 'kgabo@gmail.com' })
+  kgabo = await User.findOne({ email: 'kgabo@gmail.com' })
   console.log('synced starter users')
 
-  if (listingCount === 0 && jane) {
+  if (listingCount === 0 && kgabo) {
     const listings = [
       {
         title: 'Modern Villa with Garden Deck',
@@ -255,7 +231,7 @@ const seedIfEmpty = async () => {
     ]
 
     await Accommodation.insertMany(
-      listings.map((l) => ({ ...l, host: jane.username, host_id: jane._id }))
+      listings.map((l) => ({ ...l, host: kgabo.username, host_id: kgabo._id }))
     )
     console.log('seeded listings')
   }
@@ -307,15 +283,22 @@ const seedIfEmpty = async () => {
     await Accommodation.updateMany({ title: { $in: fix.from } }, { $set: fix.set })
   }
 
-  // Normalize legacy seeded image paths in existing records.
-  const existing = await Accommodation.find({}, { images: 1 })
-  for (const doc of existing) {
-    if (!Array.isArray(doc.images) || doc.images.length === 0) continue
-    const nextImages = doc.images.map((img) => IMAGE_REMAP[img] || img)
-    const changed = nextImages.some((img, idx) => img !== doc.images[idx])
-    if (!changed) continue
-    doc.images = nextImages
-    await doc.save()
+  // Ensure seeded listings are owned by the current configured host account.
+  if (kgabo) {
+    const seededTitles = [
+      'Modern Villa with Garden Deck',
+      'Paris City Apartment',
+      'Tokyo Designer Loft',
+      'Thailand Beach Villa',
+      'New York City Studio',
+      'Cape Town Scandi Living Room Home',
+      'Paris Luxury Suite',
+      'New York Garden Cottage'
+    ]
+    await Accommodation.updateMany(
+      { title: { $in: seededTitles } },
+      { $set: { host: kgabo.username, host_id: kgabo._id } }
+    )
   }
 }
 
